@@ -1,0 +1,2 @@
+# React-service-app
+In this application we have 3 role (plumber, washerman and electrician) if a particular user wanted to register through this roles they will simply use a sign up page and register themselves or if a particular user wanted a service than they will easily go to dashboard where they will see a whole available services users data and will also filter that data according to their use.
