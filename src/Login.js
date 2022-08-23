@@ -1,20 +1,18 @@
 import * as React from "react";
 import { useState } from "react";
 import "./App.css";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { withRouter } from "react-router";
 import postData from "./apiServices";
 import { style } from "./boxStyle";
 
-function Signup(props) {
+function Login(props) {
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -61,7 +59,7 @@ function Signup(props) {
     <>
       <div className="background">
         <form id="form" action="">
-          <h1>Enter your details</h1>
+          <h1>Enter your details for Login</h1>
           <br />
           <TextField
             id="outlined-required 1"
@@ -120,44 +118,6 @@ function Signup(props) {
             }
           />
           <br /> <br />
-          <Box sx={{ maxWidth: "50%", marginLeft: 23 }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Service</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={user.role}
-                label="role"
-                onChange={(event) =>
-                  setUser((previousState) => {
-                    return { ...previousState, role: event.target.value };
-                  })
-                }
-                required
-                autoComplete="role"
-              >
-                <MenuItem value={"plumber"}>plumber</MenuItem>
-                <MenuItem value={"washerman"}>washerman</MenuItem>
-                <MenuItem value={"electrician"}>electrician</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>{" "}
-          <br />
-          <TextField
-            id="outlined-number"
-            autoComplete="price"
-            label="Price"
-            type="number"
-            required
-            className="input"
-            value={user.price}
-            onChange={(event) =>
-              setUser((previousState) => {
-                return { ...previousState, price: event.target.value };
-              })
-            }
-          />{" "}
-          <br /> <br />
           <TextField
             id="outlined-password-input"
             label="Password"
@@ -175,15 +135,7 @@ function Signup(props) {
           />{" "}
           <br /> <br />
           <Button onClick={handleClick} variant="outlined" className="btn1">
-            Sign Up
-          </Button>
-          <Button
-            onClick={() => props.history.push("/dashboard")}
-            variant="outlined"
-            color="success"
-            className="btn2"
-          >
-            Dashboard
+            Login
           </Button>
         </form>
         <Modal
@@ -218,4 +170,4 @@ function Signup(props) {
   );
 }
 
-export default withRouter(Signup);
+export default withRouter(Login);

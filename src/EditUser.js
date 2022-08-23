@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,70 +11,45 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { withRouter } from "react-router";
-import { singleData } from "./dataReducer";
-import { useSelector, useDispatch } from "react-redux";
-import background from "./4.jpg";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  height: 200,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+import { useSelector } from "react-redux";
+import { updateData } from "./apiServices";
+import { style } from "./boxStyle";
 
 function EditUser(props) {
   const filterData = useSelector((state) => state.service.singleData);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    fetch("http://localhost:3001/users")
-      .then((res) => res.json())
-      .then((res) => {
-        dispatch(singleData(res.users[res.users.length - 1]));
-      });
-  }, [dispatch]);
-  const [name, setName] = useState(filterData.name);
-  const [email, setEmail] = useState(filterData.email);
-  const [role, setRole] = useState(filterData.role);
-  const [address, setAddress] = useState(filterData.address);
   const [open, setOpen] = useState(false);
-  const [password, setPassword] = useState(filterData.password);
-  const [mob_no, setMob_no] = useState(filterData.mob_no);
-  const [price, setPrice] = useState(filterData.price);
+
+  const [user, setUser] = useState({
+    name: filterData.name,
+    email: filterData.email,
+    role: filterData.role,
+    address: filterData.address,
+    mob_no: filterData.mob_no,
+    password: filterData.password,
+    price: filterData.price,
+  });
 
   const handleClick = () => {
     let data = {
-      name,
-      email,
-      mob_no,
-      role,
-      address,
-      price,
-      password,
+      name: user.name,
+      email: user.email,
+      mob_no: user.mob_no,
+      role: user.role,
+      address: user.address,
+      password: user.password,
+      price: user.price,
     };
-    fetch(`http://localhost:3001/users/${filterData.id}`, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }).then((res) => res.json());
+
+    updateData(data, filterData.id);
 
     if (
-      name !== "" &&
-      email !== "" &&
-      mob_no !== "" &&
-      role !== "" &&
-      password !== "" &&
-      price !== "" &&
-      address !== ""
+      user.name !== "" &&
+      user.email !== "" &&
+      user.mob_no !== "" &&
+      user.password !== "" &&
+      user.role !== "" &&
+      user.price !== "" &&
+      user.address !== ""
     ) {
       setOpen(true);
       setTimeout(() => {
@@ -84,58 +59,65 @@ function EditUser(props) {
   };
 
   return (
-    <div
-      style={{
-        backgroundImage: `url(${background})`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100% 100%",
-        height: "100vh",
-        width: "100%",
-        marginTop: "0px",
-      }}
-    >
+    <div className="background">
       <form id="form" action="">
         <h1>Update your details</h1>
         <br />
         <TextField
           id="outlined-required"
           required
-          style={{ width: "50%" }}
+          className="input"
           label="First Name"
           placeholder="Enter your first name here"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
+          value={user.name}
+          onChange={(event) =>
+            setUser((previousState) => {
+              return { ...previousState, name: event.target.value };
+            })
+          }
         />{" "}
         <br /> <br />
         <TextField
           id="outlined-required"
           required
-          style={{ width: "50%" }}
+          className="input"
           label="Email"
           placeholder="Enter your mail here"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          value={user.email}
+          onChange={(event) =>
+            setUser((previousState) => {
+              return { ...previousState, email: event.target.value };
+            })
+          }
         />
         <br /> <br />
         <TextField
           id="outlined-number"
           required
-          style={{ width: "50%" }}
+          className="input"
           autoComplete="username"
           label="Mobile Number"
           type="number"
-          value={mob_no}
-          onChange={(event) => setMob_no(event.target.value)}
+          value={user.mob_no}
+          onChange={(event) =>
+            setUser((previousState) => {
+              return { ...previousState, mob_no: event.target.value };
+            })
+          }
         />{" "}
         <br /> <br />
         <TextField
           id="outlined-required"
           required
-          style={{ width: "50%" }}
+          className="input"
           label="address"
           placeholder="Enter your address here"
-          value={address}
-          onChange={(event) => setAddress(event.target.value)}
+          value={user.address}
+          onChange={(event) =>
+            setUser((previousState) => {
+              return { ...previousState, address: event.target.value };
+            })
+          }
         />
         <br /> <br />
         <Box sx={{ maxWidth: "50%", marginLeft: 23 }}>
@@ -144,9 +126,13 @@ function EditUser(props) {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={role}
+              value={user.role}
               label="role"
-              onChange={(event) => setRole(event.target.value)}
+              onChange={(event) =>
+                setUser((previousState) => {
+                  return { ...previousState, role: event.target.value };
+                })
+              }
               required
               autoComplete="role"
             >
@@ -163,9 +149,13 @@ function EditUser(props) {
           label="Price"
           type="number"
           required
-          style={{ width: "50%" }}
-          value={price}
-          onChange={(event) => setPrice(event.target.value)}
+          className="input"
+          value={user.price}
+          onChange={(event) =>
+            setUser((previousState) => {
+              return { ...previousState, price: event.target.value };
+            })
+          }
         />{" "}
         <br /> <br />
         <TextField
@@ -174,14 +164,18 @@ function EditUser(props) {
           label="password"
           type="password"
           required
-          style={{ width: "50%" }}
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          className="input"
+          value={user.password}
+          onChange={(event) =>
+            setUser((previousState) => {
+              return { ...previousState, password: event.target.value };
+            })
+          }
         />
         <br /> <br />
         <Button
           onClick={handleClick}
-          style={{ marginRight: "20px", width: "24%" }}
+          className="btn1"
           variant="outlined"
           color="success"
         >
@@ -189,9 +183,9 @@ function EditUser(props) {
         </Button>
         <Button
           onClick={() => props.history.push("/userDetails")}
-          style={{ width: "24%" }}
           variant="outlined"
           color="error"
+          className="btn2"
         >
           Cancel
         </Button>
@@ -211,15 +205,15 @@ function EditUser(props) {
             sx={{ mt: 2 }}
             component="h2"
           >
-            Name : {name}
+            Name : {user.name}
           </Typography>
           <Typography id="modal-modal-description">
-            Mobile Number : {mob_no} <br /> role : {role} <br /> Price : {price}{" "}
-            Rs/- <br />
-            Email : {email} <br />
-            Address : {address}
+            Mobile Number : {user.mob_no} <br /> role : {user.role} <br /> Price
+            : {user.price} Rs/- <br />
+            Email : {user.email} <br />
+            Address : {user.address}
             <br />
-            password : {password}
+            Password : {user.password}
           </Typography>
         </Box>
       </Modal>
