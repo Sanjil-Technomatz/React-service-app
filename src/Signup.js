@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,6 +13,9 @@ import Button from "@mui/material/Button";
 import { withRouter } from "react-router";
 import postData from "./apiServices";
 import { style } from "./boxStyle";
+import Checkbox from "@mui/material/Checkbox";
+
+const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 function Signup(props) {
   const [user, setUser] = useState({
@@ -25,6 +28,22 @@ function Signup(props) {
     price: "",
   });
   const [open, setOpen] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  useEffect(() => {
+    localStorage.setItem("token", "undefined");
+  }, []);
+
+  const handelChange = () => {
+    if (isDisabled) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+      setUser((previousState) => {
+        return { ...previousState, role: "", price: "" };
+      });
+    }
+  };
 
   const handleClick = () => {
     let data = {
@@ -37,23 +56,38 @@ function Signup(props) {
       price: user.price,
     };
 
-    postData(data);
-
     if (
       user.name !== "" &&
       user.email !== "" &&
       user.mob_no !== "" &&
       user.password !== "" &&
-      user.role !== "" &&
-      user.price !== "" &&
-      user.address !== ""
+      user.address !== "" &&
+      isDisabled
     ) {
+      postData(data);
       setOpen(true);
       setTimeout(() => {
-        props.history.push("/userDetails");
+        props.history.push("/login");
       }, 2000);
     } else {
-      alert("Fill all details properly");
+      if (
+        user.name !== "" &&
+        user.email !== "" &&
+        user.mob_no !== "" &&
+        user.password !== "" &&
+        user.address !== "" &&
+        user.role !== "" &&
+        user.price !== "" &&
+        !isDisabled
+      ) {
+        postData(data);
+        setOpen(true);
+        setTimeout(() => {
+          props.history.push("/login");
+        }, 2000);
+      } else {
+        alert("Fill the data according to given condition");
+      }
     }
   };
 
@@ -120,44 +154,6 @@ function Signup(props) {
             }
           />
           <br /> <br />
-          <Box sx={{ maxWidth: "50%", marginLeft: 23 }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Service</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={user.role}
-                label="role"
-                onChange={(event) =>
-                  setUser((previousState) => {
-                    return { ...previousState, role: event.target.value };
-                  })
-                }
-                required
-                autoComplete="role"
-              >
-                <MenuItem value={"plumber"}>plumber</MenuItem>
-                <MenuItem value={"washerman"}>washerman</MenuItem>
-                <MenuItem value={"electrician"}>electrician</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>{" "}
-          <br />
-          <TextField
-            id="outlined-number"
-            autoComplete="price"
-            label="Price"
-            type="number"
-            required
-            className="input"
-            value={user.price}
-            onChange={(event) =>
-              setUser((previousState) => {
-                return { ...previousState, price: event.target.value };
-              })
-            }
-          />{" "}
-          <br /> <br />
           <TextField
             id="outlined-password-input"
             label="Password"
@@ -173,18 +169,62 @@ function Signup(props) {
             }
             autoComplete="current-password"
           />{" "}
+          <br />
+          <br />
+          <div id="note">
+            Note : If you want to register as a service provider then tick the
+            below checkbox and fill the remaining the fields properly{" "}
+          </div>
+          <Checkbox {...label} onChange={handelChange} />
+          <Box sx={{ maxWidth: "50%", marginLeft: 23 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Service</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={user.role}
+                label="role"
+                disabled={isDisabled}
+                onChange={(event) =>
+                  setUser((previousState) => {
+                    return { ...previousState, role: event.target.value };
+                  })
+                }
+                autoComplete="role"
+              >
+                <MenuItem value={"plumber"}>plumber</MenuItem>
+                <MenuItem value={"washerman"}>washerman</MenuItem>
+                <MenuItem value={"electrician"}>electrician</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>{" "}
+          <br />
+          <TextField
+            id="outlined-number"
+            autoComplete="price"
+            label="Price"
+            type="number"
+            disabled={isDisabled}
+            className="input"
+            value={user.price}
+            onChange={(event) =>
+              setUser((previousState) => {
+                return { ...previousState, price: event.target.value };
+              })
+            }
+          />{" "}
           <br /> <br />
           <Button onClick={handleClick} variant="outlined" className="btn1">
             Sign Up
           </Button>
-          <Button
+          {/* <Button
             onClick={() => props.history.push("/dashboard")}
             variant="outlined"
             color="success"
             className="btn2"
           >
             Dashboard
-          </Button>
+          </Button> */}
         </form>
         <Modal
           open={open}
@@ -194,22 +234,6 @@ function Signup(props) {
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h5" component="h1">
               Sign Up Successfully
-            </Typography>
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              sx={{ mt: 2 }}
-              component="h2"
-            >
-              Name : {user.name}
-            </Typography>
-            <Typography id="modal-modal-description">
-              Mobile Number : {user.mob_no} <br /> role : {user.role} <br />{" "}
-              Price : {user.price} Rs/- <br />
-              Email : {user.email} <br />
-              Address : {user.address}
-              <br />
-              Password : {user.password}
             </Typography>
           </Box>
         </Modal>

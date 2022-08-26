@@ -53,171 +53,175 @@ function EditUser(props) {
     ) {
       setOpen(true);
       setTimeout(() => {
-        props.history.push("/userDetails");
+        props.history.push({
+          pathname: "/userDetails",
+          state: { email: user.email },
+        });
       }, 2000);
+    } else {
+      alert("Fill all the data properly");
     }
   };
 
   return (
-    <div className="background">
-      <form id="form" action="">
-        <h1>Update your details</h1>
-        <br />
-        <TextField
-          id="outlined-required"
-          required
-          className="input"
-          label="First Name"
-          placeholder="Enter your first name here"
-          value={user.name}
-          onChange={(event) =>
-            setUser((previousState) => {
-              return { ...previousState, name: event.target.value };
-            })
-          }
-        />{" "}
-        <br /> <br />
-        <TextField
-          id="outlined-required"
-          required
-          className="input"
-          label="Email"
-          placeholder="Enter your mail here"
-          value={user.email}
-          onChange={(event) =>
-            setUser((previousState) => {
-              return { ...previousState, email: event.target.value };
-            })
-          }
-        />
-        <br /> <br />
-        <TextField
-          id="outlined-number"
-          required
-          className="input"
-          autoComplete="username"
-          label="Mobile Number"
-          type="number"
-          value={user.mob_no}
-          onChange={(event) =>
-            setUser((previousState) => {
-              return { ...previousState, mob_no: event.target.value };
-            })
-          }
-        />{" "}
-        <br /> <br />
-        <TextField
-          id="outlined-required"
-          required
-          className="input"
-          label="address"
-          placeholder="Enter your address here"
-          value={user.address}
-          onChange={(event) =>
-            setUser((previousState) => {
-              return { ...previousState, address: event.target.value };
-            })
-          }
-        />
-        <br /> <br />
-        <Box sx={{ maxWidth: "50%", marginLeft: 23 }}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Service</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={user.role}
-              label="role"
+    <>
+      {localStorage.getItem("token") !== "undefined" ? (
+        <div className="background">
+          <form id="form" action="">
+            <h1>Update your details</h1>
+            <br />
+            <TextField
+              id="outlined-required"
+              required
+              className="input"
+              label="First Name"
+              placeholder="Enter your first name here"
+              value={user.name}
               onChange={(event) =>
                 setUser((previousState) => {
-                  return { ...previousState, role: event.target.value };
+                  return { ...previousState, name: event.target.value };
                 })
               }
+            />{" "}
+            <br /> <br />
+            <TextField
+              id="outlined-number"
               required
-              autoComplete="role"
-            >
-              <MenuItem value={"plumber"}>plumber</MenuItem>
-              <MenuItem value={"washerman"}>washerman</MenuItem>
-              <MenuItem value={"electrician"}>electrician</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>{" "}
-        <br />
-        <TextField
-          id="outlined-number"
-          autoComplete="price"
-          label="Price"
-          type="number"
-          required
-          className="input"
-          value={user.price}
-          onChange={(event) =>
-            setUser((previousState) => {
-              return { ...previousState, price: event.target.value };
-            })
-          }
-        />{" "}
-        <br /> <br />
-        <TextField
-          id="outlined-number"
-          autoComplete="password"
-          label="password"
-          type="password"
-          required
-          className="input"
-          value={user.password}
-          onChange={(event) =>
-            setUser((previousState) => {
-              return { ...previousState, password: event.target.value };
-            })
-          }
-        />
-        <br /> <br />
-        <Button
-          onClick={handleClick}
-          className="btn1"
-          variant="outlined"
-          color="success"
-        >
-          Update
-        </Button>
-        <Button
-          onClick={() => props.history.push("/userDetails")}
-          variant="outlined"
-          color="error"
-          className="btn2"
-        >
-          Cancel
-        </Button>
-      </form>
-      <Modal
-        open={open}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h5" component="h1">
-            Data Updated Successfully
-          </Typography>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            sx={{ mt: 2 }}
-            component="h2"
-          >
-            Name : {user.name}
-          </Typography>
-          <Typography id="modal-modal-description">
-            Mobile Number : {user.mob_no} <br /> role : {user.role} <br /> Price
-            : {user.price} Rs/- <br />
-            Email : {user.email} <br />
-            Address : {user.address}
+              className="input"
+              autoComplete="username"
+              label="Mobile Number"
+              type="number"
+              value={user.mob_no}
+              onChange={(event) =>
+                setUser((previousState) => {
+                  return { ...previousState, mob_no: event.target.value };
+                })
+              }
+            />{" "}
+            <br /> <br />
+            <TextField
+              id="outlined-required"
+              required
+              className="input"
+              label="address"
+              placeholder="Enter your address here"
+              value={user.address}
+              onChange={(event) =>
+                setUser((previousState) => {
+                  return { ...previousState, address: event.target.value };
+                })
+              }
+            />
             <br />
-            Password : {user.password}
-          </Typography>
-        </Box>
-      </Modal>
-    </div>
+            {user.role !== null && (
+              <span>
+                <br />
+                <Box sx={{ maxWidth: "50%", marginLeft: 23 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Service
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={user.role}
+                      label="role"
+                      onChange={(event) =>
+                        setUser((previousState) => {
+                          return { ...previousState, role: event.target.value };
+                        })
+                      }
+                      required
+                      autoComplete="role"
+                    >
+                      <MenuItem value={"plumber"}>plumber</MenuItem>
+                      <MenuItem value={"washerman"}>washerman</MenuItem>
+                      <MenuItem value={"electrician"}>electrician</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </span>
+            )}
+            <br />
+            {user.price !== null && (
+              <span>
+                <TextField
+                  id="outlined-number"
+                  autoComplete="price"
+                  label="Price"
+                  type="number"
+                  required
+                  className="input"
+                  value={user.price}
+                  onChange={(event) =>
+                    setUser((previousState) => {
+                      return { ...previousState, price: event.target.value };
+                    })
+                  }
+                />{" "}
+                <br /> <br />
+              </span>
+            )}
+            <span className="note">
+              {" "}
+              Enter new password, don't leave this field empty otherwise your
+              data will not update !
+            </span>
+            <br />
+            <br />
+            <TextField
+              id="outlined-number"
+              autoComplete="password"
+              label="password"
+              type="password"
+              required
+              className="input"
+              value={user.password}
+              onChange={(event) =>
+                setUser((previousState) => {
+                  return { ...previousState, password: event.target.value };
+                })
+              }
+            />
+            <br /> <br />
+            <Button
+              onClick={handleClick}
+              className="btn1"
+              variant="outlined"
+              color="success"
+            >
+              Update
+            </Button>
+            <Button
+              onClick={() =>
+                props.history.push({
+                  pathname: "/userDetails",
+                  state: { email: user.email },
+                })
+              }
+              variant="outlined"
+              color="error"
+              className="btn2"
+            >
+              Cancel
+            </Button>
+          </form>
+          <Modal
+            open={open}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h5" component="h1">
+                Data Updated Successfully
+              </Typography>
+            </Box>
+          </Modal>
+        </div>
+      ) : (
+        <h1 className="loginFirst">Login First</h1>
+      )}
+    </>
   );
 }
 

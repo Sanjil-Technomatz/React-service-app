@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { fetchSingleUserData } from "./apiServices";
 import { deleteUserData } from "./apiServices";
-import { style } from "./boxStyle";
+import { style, style2 } from "./boxStyle";
 
 export default function ServiceUser(props) {
   const filterData = useSelector((state) => state.service.singleData);
@@ -18,7 +18,8 @@ export default function ServiceUser(props) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    fetchSingleUserData();
+    localStorage.getItem("token") !== "undefined" &&
+      fetchSingleUserData(props.location.state.email);
   }, []);
 
   const handleClick = () => {
@@ -30,77 +31,97 @@ export default function ServiceUser(props) {
   };
 
   return (
-    <div id="background">
-      {" "}
-      {loading && <h1>Loading Data...</h1>}
-      {failed !== "" && <h1>{failed}</h1>}
-      {failed === "" && !loading ? (
-        <>
-          <Card
-            sx={{
-              maxWidth: 445,
-              minHeight: 350,
-              paddingTop: 3,
-              position: "relative",
-              top: "20%",
-              left: "38%",
-              boxShadow: "gray 5px 9px  10px",
-              borderRadius: "20px",
-            }}
-          >
-            <CardActionArea>
-              <CardContent>
-                <Typography gutterBottom variant="h4" component="div">
-                  Name : {filterData.name} <br />
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                  {" "}
-                  Email : {filterData.email} <br />
-                  Mobile : {filterData.mob_no} <br />
-                  Price : {filterData.price} Rs/-
-                  <br />
-                  Service : {filterData.role}
-                  <br />
-                  Address : {filterData.address}
-                  <br />
-                  Password : {filterData.password}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
+    <>
+      {localStorage.getItem("token") !== "undefined" ? (
+        <div id="background">
+          {" "}
+          {loading && <h1>Loading Data...</h1>}
+          {failed !== "" && <h1>{failed}</h1>}
+          {failed === "" && !loading ? (
+            <>
+              <Card sx={style2}>
+                <CardActionArea>
+                  <CardContent>
+                    <Typography gutterBottom variant="h4" component="div">
+                      Name : {filterData.name} <br />
+                    </Typography>
+                    <Typography variant="h6" color="text.secondary">
+                      {" "}
+                      Email : {filterData.email} <br />
+                      Mobile : {filterData.mob_no} <br />
+                      {filterData.price !== null && (
+                        <span>
+                          {" "}
+                          Price : {filterData.price} Rs/-
+                          <br />
+                        </span>
+                      )}
+                      {filterData.price !== null && (
+                        <span>
+                          Service : {filterData.role}
+                          <br />
+                        </span>
+                      )}
+                      Address : {filterData.address}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
 
-            <CardActions>
-              <Button
-                color="primary"
-                variant="outlined"
-                onClick={() => props.history.push("/editDetails")}
-              >
-                Edit Details
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => props.history.push("/dashboard")}
-              >
-                Dashboard
-              </Button>
-              <Button variant="outlined" color="error" onClick={handleClick}>
-                Delete
-              </Button>
-            </CardActions>
-          </Card>
-        </>
-      ) : null}
-      <Modal
-        open={open}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h5" component="h1">
-            Data deleted succefully
-          </Typography>
-        </Box>
-      </Modal>
-    </div>
+                <CardActions>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    onClick={() => props.history.push("/editDetails")}
+                  >
+                    Edit Details
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() =>
+                      props.history.push({
+                        pathname: "/dashboard",
+                        state: { email: filterData.email },
+                      })
+                    }
+                  >
+                    Dashboard
+                  </Button>
+                </CardActions>
+                <CardActions>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={handleClick}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => props.history.push("/login")}
+                  >
+                    Log out
+                  </Button>
+                </CardActions>
+              </Card>
+            </>
+          ) : null}
+          <Modal
+            open={open}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h5" component="h1">
+                Data deleted succefully
+              </Typography>
+            </Box>
+          </Modal>
+        </div>
+      ) : (
+        <h1 className="loginFirst"> Login First</h1>
+      )}
+    </>
   );
 }
