@@ -73,8 +73,6 @@ export default function Dashboard(props) {
                   sx={{
                     maxWidth: 320,
                     marginLeft: 96,
-                    // backgroundColor: "lime",
-                    // color: "white",
                   }}
                 >
                   <FormControl fullWidth>

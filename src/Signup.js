@@ -11,7 +11,7 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { withRouter } from "react-router";
-import postData from "./apiServices";
+import { postData } from "./apiServices";
 import { style } from "./boxStyle";
 import Checkbox from "@mui/material/Checkbox";
 
@@ -32,6 +32,7 @@ function Signup(props) {
 
   useEffect(() => {
     localStorage.setItem("token", "undefined");
+    localStorage.setItem("id", "undefined");
   }, []);
 
   const handelChange = () => {
@@ -57,37 +58,33 @@ function Signup(props) {
     };
 
     if (
-      user.name !== "" &&
-      user.email !== "" &&
-      user.mob_no !== "" &&
-      user.password !== "" &&
-      user.address !== "" &&
-      isDisabled
-    ) {
-      postData(data);
-      setOpen(true);
-      setTimeout(() => {
-        props.history.push("/login");
-      }, 2000);
-    } else {
-      if (
-        user.name !== "" &&
+      (user.name !== "" &&
+        user.email !== "" &&
+        user.mob_no !== "" &&
+        user.password !== "" &&
+        user.address !== "" &&
+        isDisabled) ||
+      (user.name !== "" &&
         user.email !== "" &&
         user.mob_no !== "" &&
         user.password !== "" &&
         user.address !== "" &&
         user.role !== "" &&
         user.price !== "" &&
-        !isDisabled
-      ) {
-        postData(data);
-        setOpen(true);
-        setTimeout(() => {
-          props.history.push("/login");
-        }, 2000);
-      } else {
-        alert("Fill the data according to given condition");
-      }
+        !isDisabled)
+    ) {
+      postData(data).then(() => {
+        if (localStorage.getItem("id") !== "undefined") {
+          setOpen(true);
+          setTimeout(() => {
+            props.history.push("/login");
+          }, 2000);
+        } else {
+          alert("Email already registered");
+        }
+      });
+    } else {
+      alert("Fill the data according to given condition");
     }
   };
 
@@ -141,7 +138,7 @@ function Signup(props) {
           />{" "}
           <br /> <br />
           <TextField
-            id="outlined-required"
+            id="outlined-required "
             required
             label="address"
             className="input"
@@ -200,7 +197,7 @@ function Signup(props) {
           </Box>{" "}
           <br />
           <TextField
-            id="outlined-number"
+            id="outlined-number "
             autoComplete="price"
             label="Price"
             type="number"
@@ -217,14 +214,14 @@ function Signup(props) {
           <Button onClick={handleClick} variant="outlined" className="btn1">
             Sign Up
           </Button>
-          {/* <Button
-            onClick={() => props.history.push("/dashboard")}
+          <Button
+            onClick={() => props.history.push("/login")}
             variant="outlined"
             color="success"
             className="btn2"
           >
-            Dashboard
-          </Button> */}
+            Login
+          </Button>
         </form>
         <Modal
           open={open}

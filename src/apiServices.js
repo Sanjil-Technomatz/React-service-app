@@ -3,8 +3,8 @@ import { singleData } from "./dataReducer";
 import { serviceFailed } from "./dataReducer";
 import { serviceData } from "./dataReducer";
 
-export default function postData(data) {
-  fetch("http://localhost:3001/users", {
+export const postData = async (data) => {
+  await fetch("http://localhost:3001/users", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -13,15 +13,11 @@ export default function postData(data) {
     body: JSON.stringify(data),
   })
     .then((res) => res.json())
-    .then((res) => {
-      if (JSON.stringify(res.error) !== "undefined") {
-        alert("email already exist");
-      }
-    });
-}
+    .then((res) => localStorage.setItem("id", res.id));
+};
 
-export function login(data) {
-  fetch("http://localhost:3001/auth/login", {
+export const login = async (data) => {
+  await fetch("http://localhost:3001/auth/login", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -33,7 +29,7 @@ export function login(data) {
     .then((result) => {
       localStorage.setItem("token", JSON.stringify(result.token));
     });
-}
+};
 
 export function deleteUserData(id) {
   fetch(`http://localhost:3001/users/${id}`, {

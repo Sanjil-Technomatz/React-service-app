@@ -14,6 +14,7 @@ function Login(props) {
 
   useEffect(() => {
     localStorage.setItem("token", "undefined");
+    localStorage.removeItem("id");
   }, []);
 
   const handleClick = () => {
@@ -23,14 +24,7 @@ function Login(props) {
     };
 
     if (user.email !== "" && user.password !== "") {
-      var promise = new Promise((resolve) => {
-        login(data);
-        setTimeout(() => {
-          resolve();
-        }, 1000);
-      });
-
-      promise.then(() => {
+      login(data).then(() => {
         if (localStorage.getItem("token") !== "undefined") {
           props.history.push({
             pathname: "/dashboard",

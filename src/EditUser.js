@@ -25,7 +25,7 @@ function EditUser(props) {
     role: filterData.role,
     address: filterData.address,
     mob_no: filterData.mob_no,
-    password: filterData.password,
+    password: "",
     price: filterData.price,
   });
 
@@ -40,8 +40,6 @@ function EditUser(props) {
       price: user.price,
     };
 
-    updateData(data, filterData.id);
-
     if (
       user.name !== "" &&
       user.email !== "" &&
@@ -51,6 +49,8 @@ function EditUser(props) {
       user.price !== "" &&
       user.address !== ""
     ) {
+      updateData(data, filterData.id);
+
       setOpen(true);
       setTimeout(() => {
         props.history.push({
@@ -85,7 +85,7 @@ function EditUser(props) {
             />{" "}
             <br /> <br />
             <TextField
-              id="outlined-number"
+              id="outlined-number "
               required
               className="input"
               autoComplete="username"
@@ -100,7 +100,7 @@ function EditUser(props) {
             />{" "}
             <br /> <br />
             <TextField
-              id="outlined-required"
+              id="outlined-required "
               required
               className="input"
               label="address"
@@ -162,13 +162,6 @@ function EditUser(props) {
                 <br /> <br />
               </span>
             )}
-            <span className="note">
-              {" "}
-              Enter new password, don't leave this field empty otherwise your
-              data will not update !
-            </span>
-            <br />
-            <br />
             <TextField
               id="outlined-number"
               autoComplete="password"
